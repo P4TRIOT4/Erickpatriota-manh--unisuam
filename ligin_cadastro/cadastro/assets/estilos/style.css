@@ -1,0 +1,320 @@
+/* ===== CSS - cadastro (base: login SelNet) ===== */
+
+/* === tokens de cor === */
+:root {
+    --laranja: #FF6A00;
+    --laranja-escuro: #E55A00;
+    --laranja-claro: #FF8C3A;
+    --fonte-principal: 'Inter', sans-serif;
+}
+
+/* === dark mode (padrão) === */
+:root,
+[data-tema="dark"] {
+    --bg-page:        #0D0D0D;
+    --bg-card:        #1A1A1A;
+    --bg-input:       #0D0D0D;
+    --bg-input-focus: #1A1A1A;
+    --borda-card:     rgba(255, 106, 0, 0.15);
+    --borda-input:    rgba(136, 136, 136, 0.25);
+    --texto-titulo:   #FFFFFF;
+    --texto-label:    #888888;
+    --texto-input:    #FFFFFF;
+    --placeholder:    #888888;
+    --icone:          #888888;
+    --slogan:         rgba(255, 255, 255, 0.5);
+    --marca-nome:     #FFFFFF;
+    --link:           #FF8C3A;
+    --toggle-bg:      #1A1A1A;
+    --toggle-borda:   rgba(136, 136, 136, 0.25);
+}
+
+/* === light mode === */
+[data-tema="light"] {
+    --bg-page:        #F0F0F0;
+    --bg-card:        #FFFFFF;
+    --bg-input:       #FAFAFA;
+    --bg-input-focus: #FFFFFF;
+    --borda-card:     #E0E0E0;
+    --borda-input:    #E0E0E0;
+    --texto-titulo:   #1A1A1A;
+    --texto-label:    #555555;
+    --texto-input:    #1A1A1A;
+    --placeholder:    #BBBBBB;
+    --icone:          #AAAAAA;
+    --slogan:         rgba(255, 255, 255, 0.6);
+    --marca-nome:     #FFFFFF;
+    --link:           #FF6A00;
+    --toggle-bg:      #FFFFFF;
+    --toggle-borda:   #E0E0E0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--fonte-principal);
+    background-color: var(--bg-page);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* === botão de tema === */
+#toggle-tema {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--toggle-borda);
+    background: var(--toggle-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, border-color 0.3s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+#toggle-tema svg { width: 20px; height: 20px; }
+
+#toggle-tema:hover {
+    border-color: var(--laranja);
+    transform: scale(1.08);
+}
+
+#toggle-tema:active { transform: scale(0.96); }
+
+/* === card principal === */
+#login {
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    min-height: 520px;
+    border: 0.5px solid var(--borda-card);
+    transition: background 0.3s, border-color 0.3s;
+}
+
+/* === painel esquerdo === */
+#imagem {
+    width: 45%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+#imagem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+[data-tema="dark"] #imagem::before,
+:root #imagem::before {
+    background: linear-gradient(to bottom, #FF6A00 0%, #c44e00 35%, #3a1800 70%, #0D0D0D 100%);
+}
+
+[data-tema="light"] #imagem::before {
+    background: linear-gradient(to bottom, #FF8C3A 0%, #FF6A00 40%, #c44e00 75%, #7a3000 100%);
+}
+
+#imagem > * { position: relative; z-index: 1; }
+
+.marca { position: relative; margin-top: auto; }
+
+.marca-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.marca-icone { display: flex; align-items: center; justify-content: center; }
+
+.marca-icone img {
+    height: 44px;
+    width: auto;
+    display: block;
+    transition: filter 0.3s;
+}
+
+[data-tema="light"] .marca-icone img { filter: brightness(0) invert(1); }
+
+.marca-nome {
+    color: var(--marca-nome);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+}
+
+.marca-slogan {
+    color: var(--slogan);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* === painel direito === */
+#form {
+    flex: 1;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+    transition: background 0.3s;
+}
+
+#form .subtitulo {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--laranja);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+#form h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--texto-titulo);
+    margin-bottom: 1.5rem;
+    transition: color 0.3s;
+}
+
+/* === campos === */
+.campo {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--texto-label);
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+    transition: color 0.3s;
+}
+
+.campo-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1.5px solid var(--borda-input);
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: var(--bg-input);
+    transition: border-color 0.2s, background 0.3s;
+}
+
+.campo-inner:focus-within {
+    border-color: var(--laranja);
+    background: var(--bg-input-focus);
+}
+
+.campo-inner .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--icone);
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.campo-inner:focus-within .material-symbols-outlined {
+    color: var(--laranja);
+}
+
+.campo-inner input,
+.campo-inner select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--texto-input);
+    width: 100%;
+    font-family: inherit;
+    transition: color 0.3s;
+}
+
+.campo-inner input::placeholder {
+    color: var(--placeholder);
+    font-size: 13px;
+}
+
+.campo-inner select option {
+    background: var(--bg-card);
+    color: var(--texto-input);
+}
+
+.campo-inner input[type="date"] { color-scheme: dark; }
+[data-tema="light"] .campo-inner input[type="date"] { color-scheme: light; }
+
+/* === botão === */
+#entrar {
+    width: 100%;
+    background: var(--laranja);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+#entrar:hover { background: var(--laranja-escuro); }
+#entrar:active { transform: scale(0.99); }
+
+/* === erro senha === */
+#erroSenha {
+    font-size: 12px;
+    margin-top: -6px;
+    margin-bottom: 8px;
+}
+
+/* === links inferiores === */
+.links-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.botao {
+    font-size: 13px;
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.botao:hover { color: var(--laranja-escuro); }
