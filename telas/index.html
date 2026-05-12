@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SelNet - Planos Móveis</title>
+    <title>SelNet</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/mediaquery.css">
@@ -24,7 +24,7 @@
                 <span></span><span></span><span></span>
           </button>
             
-                <img src="assets/imagens/SelNet.png" alt="logo selnet" id="logohead">
+                <a href="index.html"><img src="assets/imagens/SelNet.png" alt="logo selnet" class="logo"></a>
             
 
           <nav class="menu">
@@ -32,14 +32,14 @@
               <ul>
                   <li class="tem-submenu">
 
-                      <a href="#">Móvel ▾</a>
+                      <a href="#movel">Móvel ▾</a>
                       <ul class="submenu">
                           <li><a href="planos_movel.html">Planos</a></li>
                           <li><a href="#recarga">Recarga</a></li>
                       </ul>
                  </li>
 
-                  <li><a href="../tela_principal/index.html">Internet</a></li>
+                  <li><a href="#planos">Internet</a></li>
 
                   <li class="tem-submenu">
                       <a href="#streaming">TV & Streaming ▾</a>
@@ -57,13 +57,16 @@
 
 
             <div id="acoes-topo">
+
                 <a href="https://wa.me/5521995648559" id="btn-whats" target="_blank">
                     <i class="fa-brands fa-whatsapp"></i>
-                    (21) 99564-8559
+                    <span id="nmr">(21) 99564-8559</span>
                 </a>
+
                 <a href="../ligin_cadastro/login/login.html" id="alogin">
                     <i class="fa-solid fa-user" id="login"></i>
                 </a>
+
             </div>
         </div>
     </header>
@@ -74,35 +77,35 @@
         <!-- Seção Hero / Banner -->
         <section id="banner-zao">
             <div class="banner-fundo">
-                <img src="assets/imagens/hero_banner_movel.png" alt="SelNet Móvel" class="img-fundo">
+                <img src="assets/imagens/hero_banner.jpg" alt="SelNet Fibra Óptica" class="img-fundo">
                 <div class="camada-escura"></div>
             </div>
             
             <div class="conteudo-banner">
                 <div class="texto-banner">
-                    <span class="tag-topo">Conectividade em qualquer lugar</span>
+                    <span class="tag-topo">A nova internet de Bonsucesso</span>
                     <h1 class="titulo-grande">
-                        Planos Móveis com<br>
-                        <span class="destaque-laranja">4G/5G</span><br>
-                        de alta performance.
+                        Ultra-velocidade com<br>
+                        <span class="destaque-laranja">Fibra Óptica</span><br>
+                        de verdade.
                     </h1>
-                    <p class="sub-titulo">Apps Ilimitados · Roaming Nacional · Portabilidade · Sem Fidelidade</p>
+                    <p class="sub-titulo">Wi-Fi 6 · IP Público · Portabilidade · Sem Fidelidade</p>
                     <a href="#planos" class="btn-ver-planos">Ver planos</a>
                 </div>
 
                 <div id="card-destaque">
-                    <div class="selo-card">SelNet móvel</div>
+                    <div class="selo-card">SelNet fibra</div>
                     <div class="info-plano">
                         <div class="velocidade">
-                            <span class="num-mega">20</span>
-                            <span class="unidade">GIGA</span>
+                            <span class="num-mega">500</span>
+                            <span class="unidade">MEGA</span>
                         </div>
                         <div class="divisor-v"></div>
                         <div class="preco-card">
                             <small>Por apenas</small>
                             <div class="valor-zao">
                                 <span class="cifrao">R$</span>
-                                <span class="reais">39</span>
+                                <span class="reais">69</span>
                                 <span class="centavos">,90</span>
                             </div>
                             <small>/mês</small>
@@ -123,76 +126,79 @@
         <section id="planos">
             <div class="container-planos">
                 <div class="cabecalho-secao">
-                    <span class="tag-secao">Móvel</span>
-                    <h2 class="titulo-secao">PLANOS 4G/5G</h2>
-                    <p class="desc-secao">A melhor cobertura para você nunca ficar offline</p>
+                    <span class="tag-secao">Internet</span>
+                    <h2 class="titulo-secao">FIBRA ÓPTICA</h2>
+                    <p class="desc-secao">Escolha o plano ideal para você e sua família</p>
                 </div>
 
                 <div id="grade-planos">
-                    <!-- Plano 10GB -->
+                    <!-- Plano 500 -->
                     <div class="card-plano">
-                        <div class="topo-card">ECONÔMICO</div>
+                        <div class="topo-card">OFERTA POR TEMPO LIMITADO</div>
                         <div class="corpo-card">
-                            <p class="marca">SelNet <strong>móvel</strong></p>
+                            <p class="marca">SelNet <strong>fibra</strong></p>
                             <div class="mega-zao">
-                                <span class="numero">10</span>
-                                <span class="texto-mega">GIGA</span>
+                                <span class="numero">500</span>
+                                <span class="texto-mega">MEGA</span>
                             </div>
                             <hr>
                             <p class="label-preco">POR APENAS</p>
                             <div class="preco">
                                 <span class="rs">R$</span>
-                                <span class="valor">29</span>
+                                <span class="valor">69</span>
                                 <span class="centavos">,90</span>
                             </div>
                             <span class="periodo">/MÊS</span>
-                            <p class="vencimento">Débito Automático</p>
+                            <p class="vencimento">Após o vencimento R$ 79,90</p>
                             
                             <ul class="lista-vantagens">
-                                <li><i class="fa-solid fa-check"></i> WhatsApp Ilimitado</li>
-                                <li><i class="fa-solid fa-check"></i> Ligações Ilimitadas</li>
-                                <li><i class="fa-solid fa-check"></i> SMS Ilimitado</li>
+                                <li><i class="fa-solid fa-check"></i> Wi-Fi 6 incluso</li>
+                                <li><i class="fa-solid fa-check"></i> IP Público</li>
                                 <li><i class="fa-solid fa-check"></i> Sem fidelidade</li>
+                                <li><i class="fa-solid fa-check"></i> App de Streaming incluso</li>
                             </ul>
 
                             <div class="tags-apps">
-                                <span>WhatsApp</span>
-                                <span>Waze</span>
+                                <span>Filmes</span>
+                                <span>Séries</span>
+                                <span>Desenhos</span>
+                                <span>TV ao Vivo</span>
                             </div>
                             <a href="https://wa.me/5521995648559" class="btn-assine" target="_blank">Assine</a>
                         </div>
                     </div>
 
-                    <!-- Plano 30GB -->
+                    <!-- Plano 900 -->
                     <div class="card-plano">
-                        <div class="topo-card">MAIS VENDIDO</div>
+                        <div class="topo-card">MELHOR OFERTA</div>
                         <div class="corpo-card">
-                            <p class="marca">SelNet <strong>móvel</strong></p>
+                            <p class="marca">SelNet <strong>fibra</strong></p>
                             <div class="mega-zao">
-                                <span class="numero">30</span>
-                                <span class="texto-mega">GIGA</span>
+                                <span class="numero">900</span>
+                                <span class="texto-mega">MEGA</span>
                             </div>
                             <hr>
                             <p class="label-preco">POR APENAS</p>
                             <div class="preco">
                                 <span class="rs">R$</span>
-                                <span class="valor">49</span>
+                                <span class="valor">99</span>
                                 <span class="centavos">,90</span>
                             </div>
                             <span class="periodo">/MÊS</span>
-                            <p class="vencimento">Débito Automático</p>
+                            <p class="vencimento">Após o vencimento R$ 109,90</p>
                             
                             <ul class="lista-vantagens">
-                                <li><i class="fa-solid fa-check"></i> Redes Sociais Ilimitadas</li>
-                                <li><i class="fa-solid fa-check"></i> Ligações Ilimitadas</li>
-                                <li><i class="fa-solid fa-check"></i> SMS Ilimitado</li>
-                                <li><i class="fa-solid fa-check"></i> Roaming Nacional</li>
+                                <li><i class="fa-solid fa-check"></i> Wi-Fi 6 incluso</li>
+                                <li><i class="fa-solid fa-check"></i> IP Público</li>
+                                <li><i class="fa-solid fa-check"></i> Sem fidelidade</li>
+                                <li><i class="fa-solid fa-check"></i> App de Streaming incluso</li>
                             </ul>
 
                             <div class="tags-apps">
-                                <span>Instagram</span>
-                                <span>Facebook</span>
-                                <span>WhatsApp</span>
+                                <span>Filmes</span>
+                                <span>Séries</span>
+                                <span>Desenhos</span>
+                                <span>TV ao Vivo</span>
                             </div>
                             <a href="https://wa.me/5521995648559" class="btn-assine" target="_blank">Assine</a>
                         </div>
@@ -205,24 +211,24 @@
         <section id="diferenciais">
             <div class="container-dif">
                 <div class="item-dif">
-                    <div class="icone-dif"><i class="fa-solid fa-tower-cell"></i></div>
-                    <h3>Cobertura 5G</h3>
-                    <p>Velocidade máxima em todo o território nacional</p>
+                    <div class="icone-dif"><i class="fa-solid fa-wifi"></i></div>
+                    <h3>Wi-Fi 6</h3>
+                    <p>A tecnologia mais avançada para sua casa</p>
                 </div>
                 <div class="item-dif">
-                    <div class="icone-dif"><i class="fa-solid fa-mobile-screen-button"></i></div>
-                    <h3>Apps Ilimitados</h3>
-                    <p>Navegue nas redes sociais sem gastar sua franquia</p>
+                    <div class="icone-dif"><i class="fa-solid fa-globe"></i></div>
+                    <h3>IP Público</h3>
+                    <p>Acesso remoto e jogos online sem travamento</p>
                 </div>
                 <div class="item-dif">
-                    <div class="icone-dif"><i class="fa-solid fa-sim-card"></i></div>
-                    <h3>eSIM Grátis</h3>
-                    <p>Ativação imediata sem necessidade de chip físico</p>
+                    <div class="icone-dif"><i class="fa-solid fa-right-left"></i></div>
+                    <h3>Portabilidade</h3>
+                    <p>Leve seu número sem complicação</p>
                 </div>
                 <div class="item-dif">
-                    <div class="icone-dif"><i class="fa-solid fa-handshake-simple"></i></div>
+                    <div class="icone-dif"><i class="fa-solid fa-shield-halved"></i></div>
                     <h3>Sem Fidelidade</h3>
-                    <p>Liberdade total para mudar de plano quando quiser</p>
+                    <p>Cancele quando quiser, sem multa</p>
                 </div>
             </div>
         </section>
@@ -232,7 +238,7 @@
 
     <footer>
         <div id="rodape-conteudo">
-            <img src="assets/imagens/SelNet.png" alt="logo selnet" id="logohead">
+            <a href="index.html"><img src="assets/imagens/SelNet.png" alt="logo selnet" class="logo"></a>
 
             <p>siga <a href="#">@SelNet</a></p>
             <p>© 2026 SelNet - Todos os direitos reservados</p>
