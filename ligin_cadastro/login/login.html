@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=key,lock" />
+    <script src="https://kit.fontawesome.com/20d3823a9d.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/midia-query.css">
@@ -14,7 +15,10 @@
 
 <body>
 
-    <button id="toggle-tema" aria-label="Alternar tema" title="Alternar tema"></button>
+    <a href="../../telas/index.html" id="btn-home" aria-label="Voltar para a página inicial" title="Voltar para Home">
+        <img src="assets/img/logo.png" alt="SelNet">
+        <span>SelNet</span>
+    </a>
 
     <main>
         <section id="login">
@@ -54,6 +58,10 @@
                     </div>
 
                     <input type="submit" value="Entrar" id="entrar">
+
+                    <div class="botoes-extras">
+                        <button type="reset" id="btn-limpar">Limpar</button>
+                    </div>
                 </form>
 
                 <div class="links-form">
@@ -64,6 +72,32 @@
 
         </section>
     </main>
+
+    <!-- Painel de Acessibilidade -->
+    <div id="painel-acessibilidade" aria-label="Ferramentas de acessibilidade">
+        <button id="btn-acessibilidade" aria-label="Abrir ferramentas de acessibilidade" title="Acessibilidade">
+            <i class="fa-solid fa-universal-access"></i>
+        </button>
+        <div id="opcoes-acessibilidade" role="region" aria-label="Opções de acessibilidade" hidden>
+            <p class="titulo-painel">Acessibilidade</p>
+
+            <div class="grupo-acesso">
+                <p class="label-grupo">Tamanho do texto</p>
+                <div class="controles-fonte">
+                    <button id="fonte-resetar" aria-label="Tamanho padrão">A</button>
+                    <button id="fonte-aumentar" aria-label="Aumentar fonte">A+</button>
+                </div>
+            </div>
+
+            <div class="grupo-acesso">
+                <p class="label-grupo">Contraste</p>
+                <button id="toggle-contraste" aria-pressed="false" aria-label="Ativar alto contraste">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    Alto contraste
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="assets/js/script.js"></script>
 

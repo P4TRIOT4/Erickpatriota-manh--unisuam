@@ -245,6 +245,35 @@
         </div>
     </footer>
 
+
+    <!-- Painel de Acessibilidade -->
+    <div id="painel-acessibilidade" aria-label="Ferramentas de acessibilidade">
+        <button id="btn-acessibilidade" aria-label="Abrir ferramentas de acessibilidade" title="Acessibilidade">
+            <i class="fa-solid fa-universal-access"></i>
+        </button>
+        <div id="opcoes-acessibilidade" role="region" aria-label="Opções de acessibilidade" hidden>
+            <p class="titulo-painel">Acessibilidade</p>
+
+            <div class="grupo-acesso">
+                <p class="label-grupo">Tamanho do texto</p>
+                <div class="controles-fonte">
+                    <button id="fonte-resetar" aria-label="Tamanho padrão">A</button>
+                    <button id="fonte-aumentar" aria-label="Aumentar fonte">A+</button>
+                </div>
+            </div>
+
+            <div class="grupo-acesso">
+                <p class="label-grupo">Contraste</p>
+                <button id="toggle-contraste" aria-pressed="false" aria-label="Ativar alto contraste">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    Alto contraste
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+
     <script src="assets/js/script.js"></script>
 </body>
 </html>

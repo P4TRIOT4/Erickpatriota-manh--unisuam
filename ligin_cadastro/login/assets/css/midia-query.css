@@ -26,7 +26,7 @@
         justify-content: flex-end;
     }
     .marca-nome {
-        font-size: 18px;
+        font-size: 1.125rem;
     }
     .marca-slogan {
         display: none;
@@ -35,7 +35,16 @@
         padding: 2rem 1.5rem;
     }
     #form h1 {
-        font-size: 20px;
+        font-size: 1.25rem;
         margin-bottom: 1.5rem;
     }
+
+    #btn-home span {
+        display: none;
+    }
+
+    #btn-home {
+        padding: 6px 8px;
+    }
+
 }

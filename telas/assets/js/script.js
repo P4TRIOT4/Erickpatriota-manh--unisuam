@@ -95,3 +95,63 @@ itensComSubmenu.forEach(item => {
     });
 });
 
+
+// ===== ACESSIBILIDADE =====
+
+// --- Painel toggle ---
+const btnAcesso = document.getElementById('btn-acessibilidade');
+const painelOpcoes = document.getElementById('opcoes-acessibilidade');
+
+btnAcesso.addEventListener('click', () => {
+    const aberto = !painelOpcoes.hidden;
+    painelOpcoes.hidden = aberto;
+    btnAcesso.setAttribute('aria-expanded', String(!aberto));
+});
+
+// Fecha painel ao clicar fora
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#painel-acessibilidade')) {
+        painelOpcoes.hidden = true;
+        btnAcesso.setAttribute('aria-expanded', 'false');
+    }
+});
+
+// --- Ajuste de fonte ---
+const TAMANHOS = [12, 14, 16, 18, 20, 22];
+let idxFonte = 2; // padrão = 16px
+
+function aplicarFonte() {
+    document.documentElement.style.setProperty('--tamanho-base', TAMANHOS[idxFonte] + 'px');
+    localStorage.setItem('selnet-fonte', idxFonte);
+}
+
+document.getElementById('fonte-aumentar').addEventListener('click', () => {
+    if (idxFonte < TAMANHOS.length - 1) { idxFonte++; aplicarFonte(); }
+});
+document.getElementById('fonte-resetar').addEventListener('click', () => {
+    idxFonte = 2; aplicarFonte();
+});
+
+// --- Alto contraste ---
+const btnContraste = document.getElementById('toggle-contraste');
+
+function aplicarContraste(ativo) {
+    document.body.classList.toggle('alto-contraste', ativo);
+    btnContraste.setAttribute('aria-pressed', String(ativo));
+    localStorage.setItem('selnet-contraste', ativo ? '1' : '0');
+}
+
+btnContraste.addEventListener('click', () => {
+    const ativo = document.body.classList.contains('alto-contraste');
+    aplicarContraste(!ativo);
+});
+
+// --- Restaurar preferências salvas ---
+(function restaurarPreferencias() {
+    // A fonte sempre inicia no tamanho padrão (16px)
+    // Apenas o contraste é restaurado entre sessões
+    const contraste = localStorage.getItem('selnet-contraste');
+    if (contraste === '1') aplicarContraste(true);
+})();
+
+

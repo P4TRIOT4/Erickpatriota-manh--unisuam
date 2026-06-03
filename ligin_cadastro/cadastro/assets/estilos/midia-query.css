@@ -1,31 +1,54 @@
 /* === Tablet (769px – 1024px) === */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-    #login {
-        max-width: 700px;
-        min-height: 480px;
+@media screen and (max-width: 1024px) {
+    #cadastro-container {
+        max-width: 100%;
     }
-    #imagem { width: 40%; }
-    #form { padding: 2rem 1.75rem; }
+    #form {
+        padding: 2rem 2rem;
+    }
 }
 
 /* === Mobile (até 768px) === */
 @media screen and (max-width: 768px) {
-    #login {
-        flex-direction: column;
-        min-height: unset;
-        border-radius: 12px;
+    main {
+        padding: 24px 16px 60px;
     }
-    #imagem {
-        width: 100%;
-        min-height: 140px;
+
+    #form {
         padding: 1.5rem;
-        justify-content: flex-end;
     }
-    .marca-nome { font-size: 18px; }
-    .marca-slogan { display: none; }
-    #form { padding: 2rem 1.5rem; }
-    #form h1 {
-        font-size: 20px;
-        margin-bottom: 1.25rem;
+
+    .form-header h1 {
+        font-size: 26px;
+    }
+
+    .linha.dois {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .linha {
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    /* campos com flex fixo voltam ao normal no mobile */
+    .linha.dois .campo[style] {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    .botoes-form {
+        flex-direction: column-reverse;
+    }
+
+    #entrar, #btn-limpar {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #painel-acessibilidade {
+        bottom: 16px;
+        right: 16px;
     }
 }
