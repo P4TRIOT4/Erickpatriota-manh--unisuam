@@ -1,198 +1,236 @@
-// === Preenchimento automático por CEP (ViaCEP) ===
-const inputCep = document.getElementById('icep');
+// --- ELEMENTOS DO HTML ---
+let campoNome = document.getElementById('inome');
+let campoDataNascimento = document.getElementById('idata');
+let campoNomeMaterno = document.getElementById('inome-materno');
+let campoCpf = document.getElementById('icpf');
+let campoEmail = document.getElementById('iemail');
+let campoCelular = document.getElementById('itelcel');
+let campoFixo = document.getElementById('itelfix');
+let campoLogradouro = document.getElementById('ilogradouro');
+let campoNumero = document.getElementById('inumero');
+let campoComplemento = document.getElementById('icomplemento');
+let campoBairro = document.getElementById('ibairro');
+let campoCidade = document.getElementById('icidade');
+let campoEstado = document.getElementById('iestado');
+let campoCep = document.getElementById('icep');
+let campoSenha = document.getElementById('isenha');
+let campoConfirmarSenha = document.getElementById('iconfirmarSenha');
+let textoErroSenha = document.getElementById('erroSenha');
+let formularioCadastro = document.getElementById('form-cadastro');
 
-// Busca o endereço automaticamente assim que o CEP tiver 8 dígitos
-inputCep.addEventListener('input', async function () {
-    // Remove tudo que não for número
-    const cep = this.value.replace(/\D/g, '');
+// ==========================================
+// 1. BUSCA DE CEP (ViaCEP)
+// ==========================================
+campoCep.addEventListener('input', function() {
+    let v = campoCep.value.replace(/\D/g, '');
+    if (v.length > 8) v = v.slice(0, 8);
+    if (v.length > 5) v = v.substring(0, 5) + "-" + v.substring(5, 8);
+    campoCep.value = v;
+});
 
-    // Só busca se tiver 8 dígitos
-    if (cep.length !== 8) return;
-
-    // Tenta buscar o CEP na API do ViaCEP
-    // O "try/catch" captura erros de conexão (ex: sem internet)
-    try {
-        const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const dados = await resposta.json();
-
-        // Se o CEP não existir, marca o campo com erro
-        if (dados.erro) {
-            inputCep.closest('.campo-inner').style.borderBottomColor = '#ff4444';
-            return;
-        }
-
-        // Limpa o erro e preenche os campos
-        inputCep.closest('.campo-inner').style.borderBottomColor = '';
-        document.getElementById('ilogradouro').value = dados.logradouro || '';
-        document.getElementById('ibairro').value     = dados.bairro     || '';
-        document.getElementById('icidade').value     = dados.localidade || '';
-        document.getElementById('iestado').value     = dados.uf         || '';
-
-        // Leva o cursor para o campo número
-        document.getElementById('inumero').focus();
-
-    } catch (erro) {
-        console.error('Não foi possível buscar o CEP:', erro);
+campoCep.addEventListener('blur', function() {
+    let cep = campoCep.value.replace(/\D/g, '');
+    if (cep.length === 8) {
+        fetch('https://viacep.com.br/ws/' + cep + '/json/')
+            .then(res => res.json())
+            .then(dados => {
+                if (dados.erro) {
+                    alert('CEP não encontrado!');
+                } else {
+                    campoLogradouro.value = dados.logradouro || '';
+                    campoBairro.value = dados.bairro || '';
+                    campoCidade.value = dados.localidade || '';
+                    campoEstado.value = dados.uf || '';
+                    campoNumero.focus();
+                }
+            });
     }
 });
 
+// ==========================================
+// 2. VALIDAÇÃO DA DATA DE NASCIMENTO (Mínimo 18 anos)
+// ==========================================
+let dataDeHoje = new Date();
+let anoHoje = dataDeHoje.getFullYear();
+let anoLimite = anoHoje - 18; 
+let mesHoje = dataDeHoje.getMonth() + 1;
+let diaHoje = dataDeHoje.getDate();
+if (mesHoje < 10) mesHoje = '0' + mesHoje;
+if (diaHoje < 10) diaHoje = '0' + diaHoje;
+let dataFormatadaLimite = anoLimite + '-' + mesHoje + '-' + diaHoje;
+campoDataNascimento.setAttribute('max', dataFormatadaLimite);
 
+// ==========================================
+// 3. VALIDAÇÃO DE NOMES (Sem hífens, apenas letras)
+// ==========================================
+function validarNomes() {
+    let nU = campoNome.value.trim();
+    let nM = campoNomeMaterno.value.trim();
+    let apenasLetras = /^[a-zA-ZÀ-ÿ\s]+$/;
 
-// === Limites da data de nascimento ===
-const campoData = document.getElementById('idata');
-
-// Data máxima: hoje (não pode nascer no futuro)
-const hoje = new Date();
-const maxData = hoje.toISOString().split('T')[0];
-
-// Data mínima: 120 anos atrás
-const minData = new Date(hoje.getFullYear() - 120, hoje.getMonth(), hoje.getDate()).toISOString().split('T')[0];
-
-campoData.setAttribute('max', maxData);
-campoData.setAttribute('min', minData);
-
-// === Validação Nome Completo e Nome Materno ===
-// Verifica se o nome tem ao menos duas palavras (nome e sobrenome)
-function validarNome(campo, mensagem) {
-    campo.addEventListener('blur', function () {
-        const palavras = this.value.trim().split(/\s+/);
-        if (this.value.trim().length > 0 && palavras.length < 2) {
-            this.setCustomValidity(mensagem);
-            this.reportValidity();
-        } else {
-            this.setCustomValidity('');
-        }
-    });
-
-    // Limpa o erro enquanto o usuário digita
-    campo.addEventListener('input', function () {
-        this.setCustomValidity('');
-    });
-}
-
-validarNome(document.getElementById('inome'), 'Informe o nome completo (nome e sobrenome)');
-validarNome(document.getElementById('inome-materno'), 'Informe o nome materno completo (nome e sobrenome)');
-
-// === Máscara CPF (formato: 000.000.000-00) ===
-const campoCpf = document.getElementById('icpf');
-
-campoCpf.addEventListener('input', function () {
-    let valor = this.value.replace(/\D/g, '').slice(0, 11); // remove não-números, limita a 11 dígitos
-    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-    valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    this.value = valor;
-    this.setCustomValidity(''); // limpa erro enquanto digita
-});
-
-// Valida se o CPF tem todos os 11 dígitos ao sair do campo
-campoCpf.addEventListener('blur', function () {
-    const digitos = this.value.replace(/\D/g, '');
-    if (digitos.length > 0 && digitos.length < 11) {
-        this.setCustomValidity('Informe um CPF válido com 11 dígitos: 000.000.000-00');
-        this.reportValidity();
-    } else {
-        this.setCustomValidity('');
-    }
-});
-
-// === Máscara CEP (formato: 00000-000) ===
-document.getElementById('icep').addEventListener('input', function () {
-    let valor = this.value.replace(/\D/g, '').slice(0, 8);
-    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
-    this.value = valor;
-});
-
-// === Máscara Celular (formato: (00) 00000-0000) ===
-const campoCelular = document.getElementById('itelcel');
-
-campoCelular.addEventListener('input', function () {
-    let valor = this.value.replace(/\D/g, '').slice(0, 11);
-    valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-    valor = valor.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
-    this.value = valor;
-});
-
-// Valida se o celular tem todos os 11 dígitos ao sair do campo
-campoCelular.addEventListener('blur', function () {
-    const digits = this.value.replace(/\D/g, '');
-    if (digits.length > 0 && digits.length < 11) {
-        this.setCustomValidity('Informe um celular válido com DDD: (00) 00000-0000');
-        this.reportValidity();
-    } else {
-        this.setCustomValidity('');
-    }
-});
-
-// === Máscara Fixo (formato: (00) 0000-0000) ===
-document.getElementById('itelfix').addEventListener('input', function () {
-    let valor = this.value.replace(/\D/g, '').slice(0, 10);
-    valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-    valor = valor.replace(/(\d{4})(\d{1,4})$/, '$1-$2');
-    this.value = valor;
-});
-
-// === Validação de senha ===
-const campoSenha = document.getElementById('isenha');
-const campoConfirmar = document.getElementById('iconfirmarSenha');
-const mensagemErro = document.getElementById('erroSenha');
-
-// Verifica se as senhas coincidem e mostra/esconde a mensagem de erro
-function validarSenha() {
-    if (campoConfirmar.value && campoSenha.value !== campoConfirmar.value) {
-        mensagemErro.style.display = 'block';
+    if (nU !== "" && (!apenasLetras.test(nU) || nU.split(' ').length < 2)) {
+        campoNome.setCustomValidity('Digite seu nome completo (apenas letras e espaços)!');
         return false;
-    }
-    mensagemErro.style.display = 'none';
+    } else { campoNome.setCustomValidity(''); }
+
+    if (nM !== "" && (!apenasLetras.test(nM) || nM.split(' ').length < 2)) {
+        campoNomeMaterno.setCustomValidity('Digite o nome completo da mãe!');
+        return false;
+    } else { campoNomeMaterno.setCustomValidity(''); }
+
     return true;
 }
+campoNome.addEventListener('input', validarNomes);
+campoNomeMaterno.addEventListener('input', validarNomes);
 
-campoConfirmar.addEventListener('input', validarSenha);
-campoSenha.addEventListener('input', validarSenha);
+// ==========================================
+// 4. MÁSCARA E VALIDAÇÃO MATEMÁTICA DE CPF
+// ==========================================
+campoCpf.addEventListener('input', function() {
+    let v = campoCpf.value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0, 11);
+    let f = "";
+    for (let i = 0; i < v.length; i++) {
+        if (i === 3 || i === 6) f += ".";
+        if (i === 9) f += "-";
+        f += v[i];
+    }
+    campoCpf.value = f;
+});
 
-// Impede o envio do formulário se as senhas não coincidirem
-document.getElementById('form-cadastro').addEventListener('submit', function (e) {
-    if (!validarSenha()) {
-        e.preventDefault(); // cancela o envio
+campoCpf.addEventListener('blur', function() {
+    let cpf = campoCpf.value.replace(/\D/g, '');
+    if (cpf === "" || cpf.length !== 11) return;
+
+    let repetidos = true;
+    for (let i = 1; i < 11; i++) { if (cpf[i] !== cpf[0]) repetidos = false; }
+    if (repetidos) {
+        campoCpf.setCustomValidity('CPF inválido!');
+        campoCpf.reportValidity();
+        return;
+    }
+
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) {
+        campoCpf.setCustomValidity('CPF inválido!');
+        campoCpf.reportValidity();
+    } else {
+        campoCpf.setCustomValidity('');
     }
 });
 
-// ===== PAINEL DE ACESSIBILIDADE =====
+// ==========================================
+// 5. E-MAIL E TELEFONES (Com trava de DDD)
+// ==========================================
+let provedores = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 'live.com', 'uol.com.br'];
 
-// Seleciona o botão e o painel de opções
+campoEmail.addEventListener('blur', function() {
+    let email = campoEmail.value.trim().toLowerCase();
+    if (email === "") return;
+    if (email.charAt(0) >= '0' && email.charAt(0) <= '9') {
+        campoEmail.setCustomValidity('E-mail não pode começar com número!');
+        campoEmail.reportValidity();
+        return;
+    }
+    let dom = email.split('@')[1];
+    if (!provedores.includes(dom)) {
+        campoEmail.setCustomValidity('Use um provedor confiável!');
+        campoEmail.reportValidity();
+    } else { campoEmail.setCustomValidity(''); }
+});
+
+function aplicarMascaraTel(campo, tipo) {
+    let v = campo.value.replace(/\D/g, '');
+    let f = "";
+    if (v.length > 0) f = "(" + v.substring(0, 2);
+    if (v.length > 2) {
+        if (tipo === 'cel') f += ") " + v.substring(2, 7) + "-" + v.substring(7, 11);
+        else f += ") " + v.substring(2, 6) + "-" + v.substring(6, 10);
+    }
+    campo.value = f;
+}
+campoCelular.addEventListener('input', function() { aplicarMascaraTel(campoCelular, 'cel'); });
+campoFixo.addEventListener('input', function() { aplicarMascaraTel(campoFixo, 'fix'); });
+
+function validarTelReal(campo, tam) {
+    let v = campo.value.replace(/\D/g, '');
+    if (v === "") return;
+    let ddd = parseInt(v.substring(0, 2));
+    if (v.length < tam || ddd < 11) {
+        campo.setCustomValidity('Telefone ou DDD inválido!');
+        campo.reportValidity();
+    } else { campo.setCustomValidity(''); }
+}
+campoCelular.addEventListener('blur', function() { validarTelReal(campoCelular, 11); });
+campoFixo.addEventListener('blur', function() { validarTelReal(campoFixo, 10); });
+
+// ==========================================
+// 6. ENVIO DO FORMULÁRIO E TRAVAS DE SEGURANÇA
+// ==========================================
+formularioCadastro.addEventListener('submit', function(e) {
+    if (!validarNomes()) { e.preventDefault(); return; }
+
+    if (campoNome.value.trim().toLowerCase() === campoNomeMaterno.value.trim().toLowerCase()) {
+        if (!confirm('Seu nome é igual ao da sua mãe. Está correto?')) { e.preventDefault(); return; }
+    }
+
+    // TRAVA DE SENHA: EXATAMENTE 8 CARACTERES
+    let s = campoSenha.value;
+    if (s.length !== 8) {
+        e.preventDefault();
+        alert('A senha deve ter exatamente 8 caracteres!');
+        campoSenha.focus();
+        return;
+    }
+
+    // Trava de senha fraca
+    let repetida = true;
+    for(let i=1; i<8; i++) { if(s[i] !== s[0]) repetida = false; }
+    if (s === "12345678" || repetida) {
+        e.preventDefault();
+        alert('Senha muito fraca!');
+        return;
+    }
+
+    if (s !== campoConfirmarSenha.value) {
+        e.preventDefault();
+        alert('As senhas não conferem!');
+        return;
+    }
+
+    alert('Cadastro realizado com sucesso!');
+});
+
+// ==========================================
+// 7. PAINEL DE ACESSIBILIDADE
+// ==========================================
 const btnAcesso = document.getElementById('btn-acessibilidade');
 const painelOpcoes = document.getElementById('opcoes-acessibilidade');
 
-// Abre ou fecha o painel ao clicar no botão
 btnAcesso.addEventListener('click', () => {
-    if (painelOpcoes.hidden) {
-        painelOpcoes.hidden = false;
-        btnAcesso.setAttribute('aria-expanded', 'true');
+    if (painelOpcoes.style.display === 'none' || painelOpcoes.style.display === '') {
+        painelOpcoes.style.display = 'block';
     } else {
-        painelOpcoes.hidden = true;
-        btnAcesso.setAttribute('aria-expanded', 'false');
+        painelOpcoes.style.display = 'none';
     }
 });
 
-// Fecha o painel ao clicar fora dele
 document.addEventListener('click', (e) => {
     if (!e.target.closest('#painel-acessibilidade')) {
-        painelOpcoes.hidden = true;
-        btnAcesso.setAttribute('aria-expanded', 'false');
+        painelOpcoes.style.display = 'none';
     }
 });
 
-// --- Ajuste de fonte ---
 const tamanhos = [12, 14, 16, 18, 20, 22];
-let indiceFonte = 2; // índice 2 = 16px (tamanho padrão)
+let indiceFonte = 2;
 
-// Aplica o tamanho de fonte atual e salva a preferência
 function aplicarFonte() {
     document.documentElement.style.setProperty('--tamanho-base', tamanhos[indiceFonte] + 'px');
-    localStorage.setItem('selnet-fonte', indiceFonte);
 }
 
-// Aumenta a fonte ao clicar em A+
 document.getElementById('fonte-aumentar').addEventListener('click', () => {
     if (indiceFonte < tamanhos.length - 1) {
         indiceFonte++;
@@ -200,42 +238,12 @@ document.getElementById('fonte-aumentar').addEventListener('click', () => {
     }
 });
 
-// Reseta a fonte ao tamanho padrão (16px)
 document.getElementById('fonte-resetar').addEventListener('click', () => {
     indiceFonte = 2;
     aplicarFonte();
 });
 
-// --- Alto contraste ---
 const btnContraste = document.getElementById('toggle-contraste');
-
-// Ativa ou desativa o alto contraste e salva a preferência
-function aplicarContraste(ativo) {
-    document.body.classList.toggle('alto-contraste', ativo);
-    btnContraste.setAttribute('aria-pressed', String(ativo));
-
-    if (ativo) {
-        localStorage.setItem('selnet-contraste', '1');
-    } else {
-        localStorage.setItem('selnet-contraste', '0');
-    }
-}
-
-// Alterna o contraste ao clicar no botão
 btnContraste.addEventListener('click', () => {
-    const contrasteAtivo = document.body.classList.contains('alto-contraste');
-    aplicarContraste(!contrasteAtivo);
+    document.body.classList.toggle('alto-contraste');
 });
-
-// --- Restaurar preferências salvas ---
-// Ao carregar a página, verifica se o usuário tinha preferências salvas
-function restaurarPreferencias() {
-    // A fonte sempre inicia no tamanho padrão (16px)
-    // Apenas o contraste é restaurado entre sessões
-    const contrasteSalvo = localStorage.getItem('selnet-contraste');
-    if (contrasteSalvo === '1') {
-        aplicarContraste(true);
-    }
-}
-
-restaurarPreferencias();

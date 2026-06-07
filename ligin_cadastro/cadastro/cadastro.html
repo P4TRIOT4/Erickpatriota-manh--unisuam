@@ -187,14 +187,14 @@
                             <label for="isenha">Senha</label>
                             <div class="campo-inner">
                                 <i class="fa-solid fa-lock"></i>
-                                <input type="password" name="senha" id="isenha" placeholder="••••••••" autocomplete="new-password" required minlength="8">
+                                <input type="password" name="senha" id="isenha" placeholder="••••••••" autocomplete="new-password" required minlength="8" maxlength="8">
                             </div>
                         </div>
                         <div class="campo">
                             <label for="iconfirmarSenha">Confirmar senha</label>
                             <div class="campo-inner">
                                 <i class="fa-solid fa-lock"></i>
-                                <input type="password" name="confirmarSenha" id="iconfirmarSenha" placeholder="••••••••" required>
+                                <input type="password" name="confirmarSenha" id="iconfirmarSenha" placeholder="••••••••" required minlength="8" maxlength="8">
                             </div>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
         <button id="btn-acessibilidade" aria-label="Abrir ferramentas de acessibilidade" title="Acessibilidade">
             <i class="fa-solid fa-universal-access"></i>
         </button>
-        <div id="opcoes-acessibilidade" role="region" aria-label="Opções de acessibilidade" hidden>
+        <div id="opcoes-acessibilidade" role="region" aria-label="Opções de acessibilidade" style="display: none;">
             <p class="titulo-painel">Acessibilidade</p>
             <div class="grupo-acesso">
                 <p class="label-grupo">Tamanho do texto</p>
