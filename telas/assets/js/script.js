@@ -155,3 +155,29 @@ btnContraste.addEventListener('click', () => {
 })();
 
 
+
+//----local storage
+// Função que verifica se tem alguém logado e troca o ícone pelo nome
+function verificarLogin() {
+    const nomeUsuario = localStorage.getItem('usuarioLogado');
+    const linkLogin = document.getElementById('alogin');
+
+    if (nomeUsuario && linkLogin) {
+        // Se tiver alguém logado, eu troco o ícone pelo "Olá, Nome"
+        // O style ali é só pra deixar o texto bonitinho e alinhado
+        linkLogin.innerHTML = `<span style="color: white; font-weight: 600; font-size: 0.9em; margin-right: 10px;">Olá, ${nomeUsuario.split(' ')[0]}</span>`;
+        
+        // Opcional: Se clicar no nome, ele desloga (limpa o storage)
+        linkLogin.addEventListener('click', (e) => {
+            if (confirm('Deseja sair da sua conta?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.reload(); // Recarrega a página para voltar o ícone
+            } else {
+                e.preventDefault(); // Não faz nada se ele cancelar
+            }
+        });
+    }
+}
+
+// Executa a verificação assim que a página termina de carregar
+window.addEventListener('load', verificarLogin);

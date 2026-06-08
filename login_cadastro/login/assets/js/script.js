@@ -35,7 +35,32 @@ if (formularioLogin) {
             return;
         }
 
-        alert('Login realizado com sucesso! (Simulação)');
+        //----local storage
+        // Busco os dados do usuário no localStorage usando o e-mail digitado
+        const usuarioSalvo = localStorage.getItem(campoEmail.value);
+
+        // Se não encontrar nada, significa que não está cadastrado
+        if (!usuarioSalvo) {
+            e.preventDefault();
+            alert('Você ainda não está cadastrado!');
+            return;
+        }
+
+        // Transformo o texto de volta em objeto para conferir a senha
+        const dados = JSON.parse(usuarioSalvo);
+
+        if (dados.senha === s) {
+            // Se a senha bater, eu salvo quem é o usuário logado no momento
+            localStorage.setItem('usuarioLogado', dados.nome);
+            e.preventDefault(); // Impede o envio real do form para o redirecionamento funcionar
+            alert('Login realizado com sucesso! Bem-vindo(a), ' + dados.nome);
+            
+            // Redireciona para a página de home
+            window.location.href = "../../telas/index.html";
+        } else {
+            e.preventDefault();
+            alert('E-mail ou senha incorretos!');
+        }
     });
 }
 

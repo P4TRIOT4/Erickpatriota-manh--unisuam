@@ -60,6 +60,11 @@ if (diaHoje < 10) diaHoje = '0' + diaHoje;
 let dataFormatadaLimite = anoLimite + '-' + mesHoje + '-' + diaHoje;
 campoDataNascimento.setAttribute('max', dataFormatadaLimite);
 
+// Trava para não aceitar anos muito antigos (ex: antes de 1920)
+let anoMinimo = 1920;
+let dataMinima = anoMinimo + '-01-01';
+campoDataNascimento.setAttribute('min', dataMinima);
+
 // ==========================================
 // 3. VALIDAÇÃO DE NOMES (Sem hífens, apenas letras)
 // ==========================================
@@ -155,6 +160,13 @@ function aplicarMascaraTel(campo, tipo) {
 campoCelular.addEventListener('input', function() { aplicarMascaraTel(campoCelular, 'cel'); });
 campoFixo.addEventListener('input', function() { aplicarMascaraTel(campoFixo, 'fix'); });
 
+// Validação do número da casa: apenas números e no máximo 5 dígitos
+campoNumero.addEventListener('input', function() {
+    let v = campoNumero.value.replace(/\D/g, ''); // Remove tudo que não é número
+    if (v.length > 5) v = v.slice(0, 5); // Corta se passar de 5 dígitos
+    campoNumero.value = v;
+});
+
 function validarTelReal(campo, tam) {
     let v = campo.value.replace(/\D/g, '');
     if (v === "") return;
@@ -201,7 +213,23 @@ formularioCadastro.addEventListener('submit', function(e) {
         return;
     }
 
-    alert('Cadastro realizado com sucesso!');
+    //----local storage
+    // Aqui eu crio um objeto com os dados que quero salvar
+    const dadosUsuario = {
+        nome: campoNome.value,
+        email: campoEmail.value,
+        senha: campoSenha.value
+    };
+
+    // Salvo no localStorage transformando o objeto em texto (string)
+    // Uso o e-mail como "chave" para cada usuário ser único
+    localStorage.setItem(campoEmail.value, JSON.stringify(dadosUsuario));
+
+    e.preventDefault(); // Impede o envio real do form para o redirecionamento funcionar
+    alert('Cadastro realizado com sucesso! Agora você já pode fazer login.');
+    
+    // Redireciona para a página de login
+    window.location.href = "../login/login.html";
 });
 
 // ==========================================
