@@ -1,4 +1,9 @@
-// --- ELEMENTOS DO HTML ---
+// ==========================================
+// SCRIPT DE CADASTRO - SELNET
+// Organizado para o trabalho da Unisuam
+// ==========================================
+
+// --- PEGANDO OS ELEMENTOS DO HTML ---
 let campoNome = document.getElementById('inome');
 let campoDataNascimento = document.getElementById('idata');
 let campoNomeMaterno = document.getElementById('inome-materno');
@@ -19,8 +24,10 @@ let textoErroSenha = document.getElementById('erroSenha');
 let formularioCadastro = document.getElementById('form-cadastro');
 
 // ==========================================
-// 1. BUSCA DE CEP (ViaCEP)
+// 1. BUSCA DE ENDEREÇO PELO CEP (ViaCEP)
 // ==========================================
+
+// Máscara para o CEP (00000-000)
 campoCep.addEventListener('input', function() {
     let v = campoCep.value.replace(/\D/g, '');
     if (v.length > 8) v = v.slice(0, 8);
@@ -28,6 +35,7 @@ campoCep.addEventListener('input', function() {
     campoCep.value = v;
 });
 
+// Busca os dados quando o usuário sai do campo
 campoCep.addEventListener('blur', function() {
     let cep = campoCep.value.replace(/\D/g, '');
     if (cep.length === 8) {
@@ -41,33 +49,45 @@ campoCep.addEventListener('blur', function() {
                     campoBairro.value = dados.bairro || '';
                     campoCidade.value = dados.localidade || '';
                     campoEstado.value = dados.uf || '';
-                    campoNumero.focus();
+                    campoNumero.focus(); // Pula direto pro número da casa
                 }
             });
     }
 });
 
 // ==========================================
-// 2. VALIDAÇÃO DA DATA DE NASCIMENTO (Mínimo 18 anos)
+// 2. VALIDAÇÕES DE DATA E NÚMERO
 // ==========================================
+
+// Trava de idade (Mínimo 18 anos e máximo realista)
 let dataDeHoje = new Date();
 let anoHoje = dataDeHoje.getFullYear();
 let anoLimite = anoHoje - 18; 
 let mesHoje = dataDeHoje.getMonth() + 1;
 let diaHoje = dataDeHoje.getDate();
+
 if (mesHoje < 10) mesHoje = '0' + mesHoje;
 if (diaHoje < 10) diaHoje = '0' + diaHoje;
+
 let dataFormatadaLimite = anoLimite + '-' + mesHoje + '-' + diaHoje;
-campoDataNascimento.setAttribute('max', dataFormatadaLimite);
+campoDataNascimento.setAttribute('max', dataFormatadaLimite); // Não aceita menores de 18
 
 // Trava para não aceitar anos muito antigos (ex: antes de 1920)
 let anoMinimo = 1920;
 let dataMinima = anoMinimo + '-01-01';
 campoDataNascimento.setAttribute('min', dataMinima);
 
+// Validação do número da casa: apenas números e no máximo 5 dígitos
+campoNumero.addEventListener('input', function() {
+    let v = campoNumero.value.replace(/\D/g, ''); // Remove tudo que não é número
+    if (v.length > 5) v = v.slice(0, 5); // Corta se passar de 5 dígitos
+    campoNumero.value = v;
+});
+
 // ==========================================
-// 3. VALIDAÇÃO DE NOMES (Sem hífens, apenas letras)
+// 3. VALIDAÇÃO DE NOMES E CPF
 // ==========================================
+
 function validarNomes() {
     let nU = campoNome.value.trim();
     let nM = campoNomeMaterno.value.trim();
@@ -88,9 +108,7 @@ function validarNomes() {
 campoNome.addEventListener('input', validarNomes);
 campoNomeMaterno.addEventListener('input', validarNomes);
 
-// ==========================================
-// 4. MÁSCARA E VALIDAÇÃO MATEMÁTICA DE CPF
-// ==========================================
+// Máscara do CPF (000.000.000-00)
 campoCpf.addEventListener('input', function() {
     let v = campoCpf.value.replace(/\D/g, '');
     if (v.length > 11) v = v.slice(0, 11);
@@ -103,6 +121,7 @@ campoCpf.addEventListener('input', function() {
     campoCpf.value = f;
 });
 
+// Validação matemática do CPF
 campoCpf.addEventListener('blur', function() {
     let cpf = campoCpf.value.replace(/\D/g, '');
     if (cpf === "" || cpf.length !== 11) return;
@@ -128,8 +147,9 @@ campoCpf.addEventListener('blur', function() {
 });
 
 // ==========================================
-// 5. E-MAIL E TELEFONES (Com trava de DDD)
+// 4. E-MAIL E TELEFONES
 // ==========================================
+
 let provedores = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 'live.com', 'uol.com.br'];
 
 campoEmail.addEventListener('blur', function() {
@@ -160,13 +180,7 @@ function aplicarMascaraTel(campo, tipo) {
 campoCelular.addEventListener('input', function() { aplicarMascaraTel(campoCelular, 'cel'); });
 campoFixo.addEventListener('input', function() { aplicarMascaraTel(campoFixo, 'fix'); });
 
-// Validação do número da casa: apenas números e no máximo 5 dígitos
-campoNumero.addEventListener('input', function() {
-    let v = campoNumero.value.replace(/\D/g, ''); // Remove tudo que não é número
-    if (v.length > 5) v = v.slice(0, 5); // Corta se passar de 5 dígitos
-    campoNumero.value = v;
-});
-
+// Validação real de telefone e DDD
 function validarTelReal(campo, tam) {
     let v = campo.value.replace(/\D/g, '');
     if (v === "") return;
@@ -180,20 +194,22 @@ campoCelular.addEventListener('blur', function() { validarTelReal(campoCelular, 
 campoFixo.addEventListener('blur', function() { validarTelReal(campoFixo, 10); });
 
 // ==========================================
-// 6. ENVIO DO FORMULÁRIO E TRAVAS DE SEGURANÇA
+// 5. FINALIZAÇÃO E SALVAMENTO (LocalStorage)
 // ==========================================
+
 formularioCadastro.addEventListener('submit', function(e) {
+    // Validações finais antes de salvar
     if (!validarNomes()) { e.preventDefault(); return; }
 
     if (campoNome.value.trim().toLowerCase() === campoNomeMaterno.value.trim().toLowerCase()) {
         if (!confirm('Seu nome é igual ao da sua mãe. Está correto?')) { e.preventDefault(); return; }
     }
 
-    // TRAVA DE SENHA: EXATAMENTE 8 CARACTERES
+    // Trava de senha: exatamente 8 caracteres
     let s = campoSenha.value;
     if (s.length !== 8) {
         e.preventDefault();
-        alert('A senha deve ter exatamente 8 caracteres!');
+        textoErroSenha.textContent = 'A senha deve ter exatamente 8 caracteres!';
         campoSenha.focus();
         return;
     }
@@ -203,29 +219,30 @@ formularioCadastro.addEventListener('submit', function(e) {
     for(let i=1; i<8; i++) { if(s[i] !== s[0]) repetida = false; }
     if (s === "12345678" || repetida) {
         e.preventDefault();
-        alert('Senha muito fraca!');
+        textoErroSenha.textContent = 'Senha muito fraca! Não use sequências ou números repetidos.';
         return;
     }
 
     if (s !== campoConfirmarSenha.value) {
         e.preventDefault();
-        alert('As senhas não conferem!');
+        textoErroSenha.textContent = 'As senhas não conferem!';
         return;
     }
 
-    //----local storage
-    // Aqui eu crio um objeto com os dados que quero salvar
+    // Se passou por tudo, limpa o texto de erro
+    textoErroSenha.textContent = '';
+
+    // Salvando os dados no LocalStorage para simular um banco de dados
     const dadosUsuario = {
         nome: campoNome.value,
         email: campoEmail.value,
         senha: campoSenha.value
     };
 
-    // Salvo no localStorage transformando o objeto em texto (string)
-    // Uso o e-mail como "chave" para cada usuário ser único
+    // Uso o e-mail como chave única para cada cadastro
     localStorage.setItem(campoEmail.value, JSON.stringify(dadosUsuario));
 
-    e.preventDefault(); // Impede o envio real do form para o redirecionamento funcionar
+    e.preventDefault(); // Impede o envio real para o redirecionamento funcionar
     alert('Cadastro realizado com sucesso! Agora você já pode fazer login.');
     
     // Redireciona para a página de login
@@ -233,8 +250,9 @@ formularioCadastro.addEventListener('submit', function(e) {
 });
 
 // ==========================================
-// 7. PAINEL DE ACESSIBILIDADE
+// 6. PAINEL DE ACESSIBILIDADE
 // ==========================================
+
 const btnAcesso = document.getElementById('btn-acessibilidade');
 const painelOpcoes = document.getElementById('opcoes-acessibilidade');
 

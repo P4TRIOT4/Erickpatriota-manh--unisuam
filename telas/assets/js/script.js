@@ -1,4 +1,13 @@
-// Navbar scroll effect
+// ==========================================
+// SCRIPT DA HOME - SELNET
+// Organizado para o trabalho da Unisuam
+// ==========================================
+
+// ==========================================
+// 1. EFEITOS VISUAIS E NAVEGAÇÃO
+// ==========================================
+
+// Efeito de scroll na Navbar (muda a cor ao rolar)
 const navbar = document.querySelector('.navbar');
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
@@ -10,33 +19,28 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Mobile nav toggle
-const navToggle = document.getElementById('navToggle');
-const navLinks = document.querySelector('.nav-links');
-if (navToggle) {
-  navToggle.addEventListener('click', () => {
-    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-    navLinks.style.flexDirection = 'column';
-    navLinks.style.position = 'absolute';
-    navLinks.style.top = '68px';
-    navLinks.style.left = '0';
-    navLinks.style.right = '0';
-    navLinks.style.background = 'linear-gradient(135deg, #FF6A00, #E55A00)';
-    navLinks.style.padding = '16px 24px';
-    navLinks.style.zIndex = '999';
-  });
+// Menu Hambúrguer (Mobile)
+const btnHamburguer = document.getElementById('hamburguer');
+const menu = document.querySelector('.menu');
+
+if (btnHamburguer) {
+    btnHamburguer.addEventListener('click', () => {
+        menu.classList.toggle('ativo');
+    });
 }
 
-// Hero dots animation
+// Animação dos pontinhos no Banner (Hero)
 const dots = document.querySelectorAll('.dot');
 let currentDot = 0;
-setInterval(() => {
-  dots[currentDot].classList.remove('active');
-  currentDot = (currentDot + 1) % dots.length;
-  dots[currentDot].classList.add('active');
-}, 3000);
+if (dots.length > 0) {
+    setInterval(() => {
+      dots[currentDot].classList.remove('active');
+      currentDot = (currentDot + 1) % dots.length;
+      dots[currentDot].classList.add('active');
+    }, 3000);
+}
 
-// Smooth scroll for anchor links
+// Scroll suave para os links internos
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
@@ -47,7 +51,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Intersection Observer for fade-in animations
+// ==========================================
+// 2. ANIMAÇÕES DE ENTRADA (Fade-In)
+// ==========================================
+
 const observerOptions = {
   threshold: 0.1,
   rootMargin: '0px 0px -50px 0px'
@@ -62,7 +69,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-// Apply fade-in to cards and sections
+// Aplica o efeito de fade-in nos cards e seções
 document.querySelectorAll('.plano-card, .dif-item, .streaming-badge').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(30px)';
@@ -70,93 +77,10 @@ document.querySelectorAll('.plano-card, .dif-item, .streaming-badge').forEach(el
   observer.observe(el);
 });
 
+// ==========================================
+// 3. SISTEMA DE LOGIN (LocalStorage)
+// ==========================================
 
-// menu responsivo 
-
-
-// Seleciona o botão hambúrguer e o menu
-const btnHamburguer = document.getElementById('hamburguer');
-const menu = document.querySelector('.menu');
-
-// Abre e fecha o menu principal
-btnHamburguer.addEventListener('click', () => {
-    menu.classList.toggle('ativo');
-});
-
-// Para os submenus no celular
-const itensComSubmenu = document.querySelectorAll('.tem-submenu');
-
-itensComSubmenu.forEach(item => {
-    item.addEventListener('click', (e) => {
-        // Se estiver no celular, abre o submenu ao clicar
-        if (window.innerWidth <= 900) {
-            item.classList.toggle('aberto');
-        }
-    });
-});
-
-
-// ===== ACESSIBILIDADE =====
-
-// --- Painel toggle ---
-const btnAcesso = document.getElementById('btn-acessibilidade');
-const painelOpcoes = document.getElementById('opcoes-acessibilidade');
-
-btnAcesso.addEventListener('click', () => {
-    const aberto = !painelOpcoes.hidden;
-    painelOpcoes.hidden = aberto;
-    btnAcesso.setAttribute('aria-expanded', String(!aberto));
-});
-
-// Fecha painel ao clicar fora
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('#painel-acessibilidade')) {
-        painelOpcoes.hidden = true;
-        btnAcesso.setAttribute('aria-expanded', 'false');
-    }
-});
-
-// --- Ajuste de fonte ---
-const TAMANHOS = [12, 14, 16, 18, 20, 22];
-let idxFonte = 2; // padrão = 16px
-
-function aplicarFonte() {
-    document.documentElement.style.setProperty('--tamanho-base', TAMANHOS[idxFonte] + 'px');
-    localStorage.setItem('selnet-fonte', idxFonte);
-}
-
-document.getElementById('fonte-aumentar').addEventListener('click', () => {
-    if (idxFonte < TAMANHOS.length - 1) { idxFonte++; aplicarFonte(); }
-});
-document.getElementById('fonte-resetar').addEventListener('click', () => {
-    idxFonte = 2; aplicarFonte();
-});
-
-// --- Alto contraste ---
-const btnContraste = document.getElementById('toggle-contraste');
-
-function aplicarContraste(ativo) {
-    document.body.classList.toggle('alto-contraste', ativo);
-    btnContraste.setAttribute('aria-pressed', String(ativo));
-    localStorage.setItem('selnet-contraste', ativo ? '1' : '0');
-}
-
-btnContraste.addEventListener('click', () => {
-    const ativo = document.body.classList.contains('alto-contraste');
-    aplicarContraste(!ativo);
-});
-
-// --- Restaurar preferências salvas ---
-(function restaurarPreferencias() {
-    // A fonte sempre inicia no tamanho padrão (16px)
-    // Apenas o contraste é restaurado entre sessões
-    const contraste = localStorage.getItem('selnet-contraste');
-    if (contraste === '1') aplicarContraste(true);
-})();
-
-
-
-//----local storage
 // Função que verifica se tem alguém logado e troca o ícone pelo nome
 function verificarLogin() {
     const nomeUsuario = localStorage.getItem('usuarioLogado');
@@ -164,16 +88,15 @@ function verificarLogin() {
 
     if (nomeUsuario && linkLogin) {
         // Se tiver alguém logado, eu troco o ícone pelo "Olá, Nome"
-        // O style ali é só pra deixar o texto bonitinho e alinhado
         linkLogin.innerHTML = `<span style="color: white; font-weight: 600; font-size: 0.9em; margin-right: 10px;">Olá, ${nomeUsuario.split(' ')[0]}</span>`;
         
-        // Opcional: Se clicar no nome, ele desloga (limpa o storage)
+        // Se clicar no nome, ele pergunta se deseja deslogar
         linkLogin.addEventListener('click', (e) => {
             if (confirm('Deseja sair da sua conta?')) {
                 localStorage.removeItem('usuarioLogado');
-                window.location.reload(); // Recarrega a página para voltar o ícone
+                window.location.reload(); // Recarrega para voltar o ícone original
             } else {
-                e.preventDefault(); // Não faz nada se ele cancelar
+                e.preventDefault(); // Cancela a ação se ele clicar em "Não"
             }
         });
     }
@@ -181,3 +104,56 @@ function verificarLogin() {
 
 // Executa a verificação assim que a página termina de carregar
 window.addEventListener('load', verificarLogin);
+
+// ==========================================
+// 4. PAINEL DE ACESSIBILIDADE
+// ==========================================
+
+const btnAcesso = document.getElementById('btn-acessibilidade');
+const painelOpcoes = document.getElementById('opcoes-acessibilidade');
+
+if (btnAcesso) {
+    btnAcesso.addEventListener('click', () => {
+        const aberto = !painelOpcoes.hidden;
+        painelOpcoes.hidden = aberto;
+        btnAcesso.setAttribute('aria-expanded', String(!aberto));
+    });
+}
+
+// Fecha o painel ao clicar fora
+document.addEventListener('click', (e) => {
+    if (painelOpcoes && !e.target.closest('#painel-acessibilidade')) {
+        painelOpcoes.hidden = true;
+        if (btnAcesso) btnAcesso.setAttribute('aria-expanded', 'false');
+    }
+});
+
+// Ajuste de fonte e contraste
+const TAMANHOS = [12, 14, 16, 18, 20, 22];
+let idxFonte = 2;
+
+function aplicarFonte() {
+    document.documentElement.style.setProperty('--tamanho-base', TAMANHOS[idxFonte] + 'px');
+}
+
+const btnAumentar = document.getElementById('fonte-aumentar');
+const btnResetar = document.getElementById('fonte-resetar');
+
+if (btnAumentar) {
+    btnAumentar.addEventListener('click', () => {
+        if (idxFonte < TAMANHOS.length - 1) { idxFonte++; aplicarFonte(); }
+    });
+}
+
+if (btnResetar) {
+    btnResetar.addEventListener('click', () => {
+        idxFonte = 2; aplicarFonte();
+    });
+}
+
+const btnContraste = document.getElementById('toggle-contraste');
+if (btnContraste) {
+    btnContraste.addEventListener('click', () => {
+        document.body.classList.toggle('alto-contraste');
+    });
+}
