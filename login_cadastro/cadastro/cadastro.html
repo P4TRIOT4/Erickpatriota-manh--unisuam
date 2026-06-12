@@ -110,37 +110,39 @@
                         </div>
                     </div>
 
-                    <!-- ENDEREÇO -->
-                    <p class="secao-titulo">Endereço</p>
 
+                    <!-- ENDEREÇO -->
+
+                    <p class="secao-titulo">Endereço</p>
                     <div class="linha dois">
+                        <div class="campo" style="flex: 0 0 120px; min-width:0;">
+                            <label for="icep">CEP</label>
+                            <div class="campo-inner">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <input type="text" name="cep" id="icep" placeholder="00000-000" required maxlength="9">
+                            </div>
+                        </div>
                         <div class="campo" style="grid-column: span 1; flex: 2;">
                             <label for="ilogradouro">Logradouro</label>
                             <div class="campo-inner">
-                                <i class="fa-solid fa-road"></i>
+                                    <i class="fa-solid fa-road"></i>
                                 <input type="text" name="logradouro" id="ilogradouro" placeholder="Rua, Av., Trav..." required maxlength="100">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="linha dois">
                         <div class="campo" style="flex: 0 0 120px; min-width:0;">
                             <label for="inumero">Número</label>
                             <div class="campo-inner">
                                 <input type="text" name="numero" id="inumero" placeholder="Nº" required maxlength="10">
                             </div>
                         </div>
-                    </div>
-
-                    <div class="linha dois">
                         <div class="campo">
                             <label for="icomplemento">Complemento</label>
                             <div class="campo-inner">
-                                <input type="text" name="complemento" id="icomplemento" placeholder="Apto, Bloco..." maxlength="50">
-                            </div>
-                        </div>
-                        <div class="campo">
-                            <label for="icep">CEP</label>
-                            <div class="campo-inner">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <input type="text" name="cep" id="icep" placeholder="00000-000" required maxlength="9">
+                                            <input type="text" name="complemento" id="icomplemento" placeholder="Apto, Bloco..." maxlength="50">
+        
                             </div>
                         </div>
                     </div>
