@@ -9,17 +9,44 @@ let campoSenha = document.getElementById('isenha');
 let formularioLogin = document.querySelector('form');
 
 // ==========================================
+// 0. FUNÇÕES DO MODAL PERSONALIZADO
+// ==========================================
+
+function mostrarModal(titulo, mensagem, acaoAoFechar = null) {
+    const modal = document.getElementById('meuModal');
+    const modalTitulo = document.getElementById('modal-titulo');
+    const modalMensagem = document.getElementById('modal-mensagem');
+    
+    modalTitulo.innerText = titulo;
+    modalMensagem.innerText = mensagem;
+    modal.style.display = 'block';
+    
+    // Armazena a ação de fechamento no botão
+    const btnModal = modal.querySelector('.btn-modal');
+    btnModal.onclick = function() {
+        fecharModal();
+        if (acaoAoFechar) acaoAoFechar();
+    };
+}
+
+function fecharModal() {
+    const modal = document.getElementById('meuModal');
+    modal.style.display = 'none';
+}
+
+// ==========================================
 // 1. VALIDAÇÃO E AUTENTICAÇÃO (LocalStorage)
 // ==========================================
 
 if (formularioLogin) {
     formularioLogin.addEventListener('submit', function(e) {
+        e.preventDefault(); // Impede o envio real para o redirecionamento funcionar
+        
         let s = campoSenha.value;
 
         // Trava de segurança: exatamente 8 caracteres
         if (s.length !== 8) {
-            e.preventDefault();
-            alert('A senha deve ter exatamente 8 caracteres!');
+            mostrarModal('Atenção', 'A senha deve ter exatamente 8 caracteres!');
             return;
         }
         
@@ -31,8 +58,7 @@ if (formularioLogin) {
         }
         
         if (s === seq || repetida) {
-            e.preventDefault();
-            alert('Acesso negado: Essa senha é muito fraca!');
+            mostrarModal('Acesso Negado', 'Essa senha é muito fraca!');
             return;
         }
 
@@ -41,8 +67,7 @@ if (formularioLogin) {
 
         // Se não encontrar nada, significa que o e-mail não está no "banco"
         if (!usuarioSalvo) {
-            e.preventDefault();
-            alert('Você ainda não está cadastrado!');
+            mostrarModal('Erro', 'Você ainda não está cadastrado!');
             return;
         }
 
@@ -53,14 +78,12 @@ if (formularioLogin) {
             // Se a senha bater, eu salvo quem é o usuário logado no momento
             localStorage.setItem('usuarioLogado', dados.nome);
             
-            e.preventDefault(); // Impede o envio real para o redirecionamento funcionar
-            alert('Login realizado com sucesso! Bem-vindo(a), ' + dados.nome);
-            
-            // Redireciona para a página principal (Home)
-            window.location.href = "../../telas/index.html";
+            mostrarModal('Sucesso!', 'Login realizado com sucesso! Bem-vindo(a), ' + dados.nome, () => {
+                // Redireciona para a página principal (Home)
+                window.location.href = "../../telas/index.html";
+            });
         } else {
-            e.preventDefault();
-            alert('E-mail ou senha incorretos!');
+            mostrarModal('Erro', 'E-mail ou senha incorretos!');
         }
     });
 }

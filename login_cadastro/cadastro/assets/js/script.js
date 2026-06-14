@@ -24,6 +24,32 @@ let textoErroSenha = document.getElementById('erroSenha');
 let formularioCadastro = document.getElementById('form-cadastro');
 
 // ==========================================
+// 0. FUNÇÕES DO MODAL PERSONALIZADO
+// ==========================================
+
+function mostrarModal(titulo, mensagem, acaoAoFechar = null) {
+    const modal = document.getElementById('meuModal');
+    const modalTitulo = document.getElementById('modal-titulo');
+    const modalMensagem = document.getElementById('modal-mensagem');
+    
+    modalTitulo.innerText = titulo;
+    modalMensagem.innerText = mensagem;
+    modal.style.display = 'block';
+    
+    // Armazena a ação de fechamento no botão
+    const btnModal = modal.querySelector('.btn-modal');
+    btnModal.onclick = function() {
+        fecharModal();
+        if (acaoAoFechar) acaoAoFechar();
+    };
+}
+
+function fecharModal() {
+    const modal = document.getElementById('meuModal');
+    modal.style.display = 'none';
+}
+
+// ==========================================
 // 1. BUSCA DE ENDEREÇO PELO CEP (ViaCEP)
 // ==========================================
 
@@ -43,7 +69,7 @@ campoCep.addEventListener('blur', function() {
             .then(res => res.json())
             .then(dados => {
                 if (dados.erro) {
-                    alert('CEP não encontrado!');
+                    mostrarModal('Erro', 'CEP não encontrado!');
                 } else {
                     campoLogradouro.value = dados.logradouro || '';
                     campoBairro.value = dados.bairro || '';
@@ -236,6 +262,8 @@ formularioCadastro.querySelectorAll('input, select').forEach(campo => {
 });
 
 formularioCadastro.addEventListener('submit', function(e) {
+    e.preventDefault(); // Impede o envio real para o redirecionamento funcionar
+
     // Limpa erros anteriores antes de validar tudo de novo
     let campos = formularioCadastro.querySelectorAll('input, select');
     campos.forEach(c => c.parentElement.classList.remove('campo-erro'));
@@ -299,8 +327,6 @@ formularioCadastro.addEventListener('submit', function(e) {
 
     // Se houver qualquer erro, para o envio e avisa o usuário
     if (erro) {
-        e.preventDefault();
-        
         // Pega o primeiro campo com erro para dar o foco e subir a página
         let primeiroErro = formularioCadastro.querySelector('.campo-erro');
         if (primeiroErro) {
@@ -310,14 +336,22 @@ formularioCadastro.addEventListener('submit', function(e) {
             if (inputErro) setTimeout(() => inputErro.focus(), 500);
         }
 
-        alert('Por favor, preencha corretamente os campos destacados em vermelho.');
+        mostrarModal('Atenção', 'Por favor, preencha corretamente os campos destacados em vermelho.');
         return;
     }
 
+    // Verificação de nome igual ao da mãe (humanizado)
     if (campoNome.value.trim().toLowerCase() === campoNomeMaterno.value.trim().toLowerCase()) {
-        if (!confirm('Seu nome é igual ao da sua mãe. Está correto?')) { e.preventDefault(); return; }
+        mostrarModal('Confirmação', 'Seu nome é igual ao da sua mãe. Se estiver correto, clique em Entendi para prosseguir.', () => {
+            finalizarCadastro();
+        });
+        return;
     }
 
+    finalizarCadastro();
+});
+
+function finalizarCadastro() {
     // Se passou por tudo, limpa o texto de erro
     textoErroSenha.textContent = '';
     textoErroSenha.style.display = 'none';
@@ -332,12 +366,10 @@ formularioCadastro.addEventListener('submit', function(e) {
     // Uso o e-mail como chave única para cada cadastro
     localStorage.setItem(campoEmail.value, JSON.stringify(dadosUsuario));
 
-    e.preventDefault(); // Impede o envio real para o redirecionamento funcionar
-    alert('Cadastro realizado com sucesso! Agora você já pode fazer login.');
-    
-    // Redireciona para a página de login
-    window.location.href = "../login/login.html";
-});
+    mostrarModal('Sucesso!', 'Cadastro realizado com sucesso! Agora você já pode fazer login.', () => {
+        window.location.href = "../login/login.html";
+    });
+}
 
 // ==========================================
 // 6. PAINEL DE ACESSIBILIDADE

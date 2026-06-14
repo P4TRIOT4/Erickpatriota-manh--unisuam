@@ -4,11 +4,39 @@
 // ==========================================
 
 // ==========================================
+// 0. FUNÇÕES DO MODAL PERSONALIZADO
+// ==========================================
+
+function mostrarModal(titulo, mensagem, acaoAoFechar = null) {
+    const modal = document.getElementById('meuModal');
+    const modalTitulo = document.getElementById('modal-titulo');
+    const modalMensagem = document.getElementById('modal-mensagem');
+    
+    if (!modal) return; // Segurança caso o modal não exista na página
+
+    modalTitulo.innerText = titulo;
+    modalMensagem.innerText = mensagem;
+    modal.style.display = 'block';
+    
+    // Armazena a ação de fechamento no botão
+    const btnModal = modal.querySelector('.btn-modal');
+    btnModal.onclick = function() {
+        fecharModal();
+        if (acaoAoFechar) acaoAoFechar();
+    };
+}
+
+function fecharModal() {
+    const modal = document.getElementById('meuModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// ==========================================
 // 1. EFEITOS VISUAIS E NAVEGAÇÃO
 // ==========================================
 
 // Efeito de scroll na Navbar (muda a cor ao rolar)
-const navbar = document.querySelector('.navbar');
+const navbar = document.querySelector('header');
 window.addEventListener('scroll', () => {
   if (window.scrollY > 50) {
     navbar.style.background = 'linear-gradient(135deg, #CC5500 0%, #FF6A00 50%, #CC4400 100%)';
@@ -29,22 +57,14 @@ if (btnHamburguer) {
     });
 }
 
-// Animação dos pontinhos no Banner (Hero)
-const dots = document.querySelectorAll('.dot');
-let currentDot = 0;
-if (dots.length > 0) {
-    setInterval(() => {
-      dots[currentDot].classList.remove('active');
-      currentDot = (currentDot + 1) % dots.length;
-      dots[currentDot].classList.add('active');
-    }, 3000);
-}
-
 // Scroll suave para os links internos
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
+    
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
+    const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -70,7 +90,7 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 // Aplica o efeito de fade-in nos cards e seções
-document.querySelectorAll('.plano-card, .dif-item, .streaming-badge').forEach(el => {
+document.querySelectorAll('.card-plano, .item-dif').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(30px)';
   el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -92,12 +112,12 @@ function verificarLogin() {
         
         // Se clicar no nome, ele pergunta se deseja deslogar
         linkLogin.addEventListener('click', (e) => {
-            if (confirm('Deseja sair da sua conta?')) {
+            e.preventDefault(); // Sempre cancela o link original
+            
+            mostrarModal('Sair da Conta', 'Deseja realmente sair da sua conta?', () => {
                 localStorage.removeItem('usuarioLogado');
                 window.location.reload(); // Recarrega para voltar o ícone original
-            } else {
-                e.preventDefault(); // Cancela a ação se ele clicar em "Não"
-            }
+            });
         });
     }
 }
