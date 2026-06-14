@@ -149,6 +149,11 @@ main {
     border-bottom-color: var(--borda-focus);
 }
 
+/* Classe de erro para destacar campos inválidos - Vermelho vivo e borda MUITO grossa */
+.campo-erro {
+    border-bottom: 4px solid #ff0000 !important;
+}
+
 /* sem ícones */
 .campo-inner i { display: none; }
 

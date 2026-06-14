@@ -85,7 +85,7 @@ campoNumero.addEventListener('input', function() {
 });
 
 // ==========================================
-// 3. VALIDAÇÃO DE NOMES E CPF
+// 3. VALIDAÇÃO DE NOMES, CPF E SENHA
 // ==========================================
 
 function validarNomes() {
@@ -93,20 +93,48 @@ function validarNomes() {
     let nM = campoNomeMaterno.value.trim();
     let apenasLetras = /^[a-zA-ZÀ-ÿ\s]+$/;
 
-    if (nU !== "" && (!apenasLetras.test(nU) || nU.split(' ').length < 2)) {
-        campoNome.setCustomValidity('Digite seu nome completo (apenas letras e espaços)!');
+    if (nU !== "" && (!apenasLetras.test(nU) || nU.split(' ').length < 2 || nU.length < 15)) {
+        campoNome.setCustomValidity('Digite seu nome completo (mínimo 15 caracteres, apenas letras)!');
+        campoNome.parentElement.classList.add('campo-erro');
         return false;
-    } else { campoNome.setCustomValidity(''); }
+    } else { 
+        campoNome.setCustomValidity(''); 
+        campoNome.parentElement.classList.remove('campo-erro');
+    }
 
-    if (nM !== "" && (!apenasLetras.test(nM) || nM.split(' ').length < 2)) {
-        campoNomeMaterno.setCustomValidity('Digite o nome completo da mãe!');
+    if (nM !== "" && (!apenasLetras.test(nM) || nM.split(' ').length < 2 || nM.length < 15)) {
+        campoNomeMaterno.setCustomValidity('Digite o nome completo da mãe (mínimo 15 caracteres)!');
+        campoNomeMaterno.parentElement.classList.add('campo-erro');
         return false;
-    } else { campoNomeMaterno.setCustomValidity(''); }
+    } else { 
+        campoNomeMaterno.setCustomValidity(''); 
+        campoNomeMaterno.parentElement.classList.remove('campo-erro');
+    }
 
     return true;
 }
 campoNome.addEventListener('input', validarNomes);
 campoNomeMaterno.addEventListener('input', validarNomes);
+
+// Função para validar a senha em tempo real
+function validarSenhaReal() {
+    let s = campoSenha.value;
+    let apenasLetrasSenha = /^[a-zA-ZÀ-ÿ]+$/;
+
+    if (s !== "" && !apenasLetrasSenha.test(s)) {
+        textoErroSenha.textContent = 'A senha deve conter apenas letras (sem números)!';
+        textoErroSenha.style.display = 'block';
+        campoSenha.parentElement.classList.add('campo-erro');
+    } else if (s !== "" && s.length !== 8) {
+        textoErroSenha.textContent = 'A senha deve ter exatamente 8 caracteres!';
+        textoErroSenha.style.display = 'block';
+        campoSenha.parentElement.classList.remove('campo-erro');
+    } else {
+        textoErroSenha.style.display = 'none';
+        campoSenha.parentElement.classList.remove('campo-erro');
+    }
+}
+campoSenha.addEventListener('input', validarSenhaReal);
 
 // Máscara do CPF (000.000.000-00)
 campoCpf.addEventListener('input', function() {
@@ -197,40 +225,102 @@ campoFixo.addEventListener('blur', function() { validarTelReal(campoFixo, 10); }
 // 5. FINALIZAÇÃO E SALVAMENTO (LocalStorage)
 // ==========================================
 
+// Função para limpar o erro quando o usuário digita no campo
+function limparErroAoDigitar(e) {
+    e.target.parentElement.classList.remove('campo-erro');
+}
+
+// Adiciona o evento de limpar erro em todos os campos do formulário
+formularioCadastro.querySelectorAll('input, select').forEach(campo => {
+    campo.addEventListener('input', limparErroAoDigitar);
+});
+
 formularioCadastro.addEventListener('submit', function(e) {
+    // Limpa erros anteriores antes de validar tudo de novo
+    let campos = formularioCadastro.querySelectorAll('input, select');
+    campos.forEach(c => c.parentElement.classList.remove('campo-erro'));
+
     // Validações finais antes de salvar
-    if (!validarNomes()) { e.preventDefault(); return; }
+    let erro = false;
+
+    // 1. Verifica campos vazios obrigatórios
+    campos.forEach(c => {
+        if (c.hasAttribute('required') && c.value.trim() === "") {
+            c.parentElement.classList.add('campo-erro');
+            erro = true;
+        }
+    });
+
+    // 2. Validação de Nomes (Seu e da Mãe)
+    if (!validarNomes()) {
+        erro = true;
+    }
+
+    // 3. Validação de CPF (Matemática)
+    let cpf = campoCpf.value.replace(/\D/g, '');
+    if (campoCpf.hasAttribute('required') && (cpf === "" || cpf.length !== 11 || campoCpf.validationMessage !== "")) {
+        campoCpf.parentElement.classList.add('campo-erro');
+        erro = true;
+    }
+
+    // 4. Validação de E-mail
+    if (campoEmail.hasAttribute('required') && (campoEmail.value.trim() === "" || campoEmail.validationMessage !== "")) {
+        campoEmail.parentElement.classList.add('campo-erro');
+        erro = true;
+    }
+
+    // 5. Validação de Senha (Exatamente 8 letras)
+    let s = campoSenha.value;
+    let apenasLetrasSenha = /^[a-zA-ZÀ-ÿ]+$/;
+
+    if (s.length !== 8 || !apenasLetrasSenha.test(s)) {
+        validarSenhaReal();
+        campoSenha.focus();
+        erro = true;
+    }
+
+    // 6. Trava de senha fraca
+    let repetida = true;
+    for(let i=1; i<8; i++) { if(s[i] !== s[0]) repetida = false; }
+    if (s === "12345678" || repetida) {
+        textoErroSenha.textContent = 'Senha muito fraca! Não use sequências ou números repetidos.';
+        textoErroSenha.style.display = 'block';
+        campoSenha.parentElement.classList.add('campo-erro');
+        erro = true;
+    }
+
+    // 7. Confirmação de Senha
+    if (s !== campoConfirmarSenha.value) {
+        textoErroSenha.textContent = 'As senhas não conferem!';
+        textoErroSenha.style.display = 'block';
+        campoConfirmarSenha.parentElement.classList.add('campo-erro');
+        erro = true;
+    }
+
+    // Se houver qualquer erro, para o envio e avisa o usuário
+    if (erro) {
+        e.preventDefault();
+        
+        // Pega o primeiro campo com erro para dar o foco e subir a página
+        let primeiroErro = formularioCadastro.querySelector('.campo-erro');
+        if (primeiroErro) {
+            primeiroErro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Tenta dar foco no input dentro da div de erro
+            let inputErro = primeiroErro.querySelector('input, select');
+            if (inputErro) setTimeout(() => inputErro.focus(), 500);
+        }
+
+        alert('Por favor, preencha corretamente os campos destacados em vermelho.');
+        return;
+    }
 
     if (campoNome.value.trim().toLowerCase() === campoNomeMaterno.value.trim().toLowerCase()) {
         if (!confirm('Seu nome é igual ao da sua mãe. Está correto?')) { e.preventDefault(); return; }
     }
 
-    // Trava de senha: exatamente 8 caracteres
-    let s = campoSenha.value;
-    if (s.length !== 8) {
-        e.preventDefault();
-        textoErroSenha.textContent = 'A senha deve ter exatamente 8 caracteres!';
-        campoSenha.focus();
-        return;
-    }
-
-    // Trava de senha fraca
-    let repetida = true;
-    for(let i=1; i<8; i++) { if(s[i] !== s[0]) repetida = false; }
-    if (s === "12345678" || repetida) {
-        e.preventDefault();
-        textoErroSenha.textContent = 'Senha muito fraca! Não use sequências ou números repetidos.';
-        return;
-    }
-
-    if (s !== campoConfirmarSenha.value) {
-        e.preventDefault();
-        textoErroSenha.textContent = 'As senhas não conferem!';
-        return;
-    }
-
     // Se passou por tudo, limpa o texto de erro
     textoErroSenha.textContent = '';
+    textoErroSenha.style.display = 'none';
 
     // Salvando os dados no LocalStorage para simular um banco de dados
     const dadosUsuario = {
